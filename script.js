@@ -18,7 +18,6 @@ const btnCancelar = document.getElementById('btnCancelar')
 
 let grafico = null
 
-// EVENTOS (AQUI ESTAVA O ERRO ANTES)
 btnReceita.addEventListener('click', () => abrirModal('receita'))
 btnDespesa.addEventListener('click', () => abrirModal('despesa'))
 btnSalvar.addEventListener('click', salvarTransacao)
@@ -67,7 +66,7 @@ function atualizarTela() {
 
   listaEl.innerHTML = ''
 
-  transacoes.forEach((t) => {
+  transacoes.forEach(t => {
     if (t.tipo === 'receita') totalReceitas += t.valor
     else totalDespesas += t.valor
 
@@ -115,7 +114,6 @@ function atualizarGrafico(receitas, despesas) {
   })
 }
 
-// Fechar modal clicando fora
 modal.addEventListener('click', (e) => {
   if (e.target === modal) fecharModal()
 })
