@@ -1,113 +1,109 @@
-let transacoes = []
-let tipoAtual = "receita"
+let transacoes = JSON.parse(localStorage.getItem("transacoes")) || [];
+let tipoAtual = "";
+let indiceEdicao = null;
+let grafico = null;
 
-const modal = document.getElementById("modal")
-const valorInput = document.getElementById("valor")
-const descricaoInput = document.getElementById("descricao")
-const dataInput = document.getElementById("data")
+const modal = document.getElementById("modal");
+const valorInput = document.getElementById("valor");
+const descricaoInput = document.getElementById("descricao");
+const dataInput = document.getElementById("data");
 
-const saldoEl = document.getElementById("saldo")
-const receitasEl = document.getElementById("receitas")
-const despesasEl = document.getElementById("despesas")
-const listaEl = document.getElementById("lista")
+document.getElementById("btnReceita").onclick = () => abrirModal("receita");
+document.getElementById("btnDespesa").onclick = () => abrirModal("despesa");
+document.getElementById("btnCancelar").onclick = fecharModal;
+document.getElementById("btnSalvar").onclick = salvarTransacao;
 
-const btnReceita = document.getElementById("btnReceita")
-const btnDespesa = document.getElementById("btnDespesa")
-const btnSalvar = document.getElementById("btnSalvar")
-const btnCancelar = document.getElementById("btnCancelar")
+function abrirModal(tipo, index = null) {
+  tipoAtual = tipo;
+  indiceEdicao = index;
+  modal.style.display = "flex";
 
-let grafico = null
-
-btnReceita.onclick = () => abrirModal("receita")
-btnDespesa.onclick = () => abrirModal("despesa")
-btnCancelar.onclick = fecharModal
-btnSalvar.onclick = salvar
-
-function abrirModal(tipo) {
-  tipoAtual = tipo
-  document.getElementById("tituloModal").innerText =
-    tipo === "receita" ? "Nova Receita" : "Nova Despesa"
-  modal.classList.remove("hidden")
+  if (index !== null) {
+    const t = transacoes[index];
+    valorInput.value = t.valor;
+    descricaoInput.value = t.descricao;
+    dataInput.value = t.data;
+  } else {
+    valorInput.value = "";
+    descricaoInput.value = "";
+    dataInput.value = "";
+  }
 }
 
 function fecharModal() {
-  modal.classList.add("hidden")
-  valorInput.value = ""
-  descricaoInput.value = ""
-  dataInput.value = ""
+  modal.style.display = "none";
+  indiceEdicao = null;
 }
 
-function salvar() {
-  const valor = Number(valorInput.value)
-  if (!valor) return
+function salvarTransacao() {
+  const valor = Number(valorInput.value);
+  const descricao = descricaoInput.value;
+  const data = dataInput.value;
 
-  transacoes.push({
-    tipo: tipoAtual,
-    valor,
-    descricao: descricaoInput.value,
-    data: dataInput.value
-  })
+  if (!valor || !descricao || !data) return alert("Preencha tudo");
 
-  fecharModal()
-  renderizar()
+  const transacao = { tipo: tipoAtual, valor, descricao, data };
+
+  if (indiceEdicao !== null) {
+    transacoes[indiceEdicao] = transacao;
+  } else {
+    transacoes.push(transacao);
+  }
+
+  localStorage.setItem("transacoes", JSON.stringify(transacoes));
+  fecharModal();
+  atualizar();
 }
 
 function deletarTransacao(index) {
-  transacoes.splice(index, 1)
-  renderizar()
+  transacoes.splice(index, 1);
+  localStorage.setItem("transacoes", JSON.stringify(transacoes));
+  atualizar();
 }
 
-function renderizar() {
-  listaEl.innerHTML = ""
+function atualizar() {
+  const lista = document.getElementById("lista");
+  lista.innerHTML = "";
 
-  let receitas = 0
-  let despesas = 0
+  let receitas = 0;
+  let despesas = 0;
 
   transacoes.forEach((t, index) => {
-    const li = document.createElement("li")
+    if (t.tipo === "receita") receitas += t.valor;
+    else despesas += t.valor;
 
+    const li = document.createElement("li");
     li.innerHTML = `
-      <span>
-        ${t.descricao || "(sem descrição)"} 
-        ${t.data ? " - " + t.data : ""}
-      </span>
+      ${t.descricao} (${t.data}) - 
+      <strong>${t.tipo === "receita" ? "+" : "-"} R$ ${t.valor}</strong>
+      <button onclick="abrirModal('${t.tipo}', ${index})">Editar</button>
+      <button onclick="deletarTransacao(${index})">🗑</button>
+    `;
+    lista.appendChild(li);
+  });
 
-      <div>
-        <strong style="color:${t.tipo === "receita" ? "green" : "red"}">
-          ${t.tipo === "receita" ? "+" : "-"} R$ ${t.valor.toFixed(2)}
-        </strong>
-        <button 
-          style="margin-left:10px; cursor:pointer"
-          onclick="deletarTransacao(${index})"
-        >🗑</button>
-      </div>
-    `
+  document.getElementById("saldo").innerText = `R$ ${(receitas - despesas).toFixed(2)}`;
+  document.getElementById("receitas").innerText = `R$ ${receitas.toFixed(2)}`;
+  document.getElementById("despesas").innerText = `R$ ${despesas.toFixed(2)}`;
 
-    listaEl.appendChild(li)
-
-    t.tipo === "receita" ? receitas += t.valor : despesas += t.valor
-  })
-
-  saldoEl.innerText = `R$ ${(receitas - despesas).toFixed(2)}`
-  receitasEl.innerText = `R$ ${receitas.toFixed(2)}`
-  despesasEl.innerText = `R$ ${despesas.toFixed(2)}`
-
-  atualizarGrafico(receitas, despesas)
+  atualizarGrafico(receitas, despesas);
 }
 
-function atualizarGrafico(r, d) {
-  const ctx = document.getElementById("graficoPizza")
+function atualizarGrafico(receitas, despesas) {
+  const ctx = document.getElementById("grafico");
 
-  if (grafico) grafico.destroy()
+  if (grafico) grafico.destroy();
 
   grafico = new Chart(ctx, {
-    type: "doughnut",
+    type: "pie",
     data: {
       labels: ["Receitas", "Despesas"],
       datasets: [{
-        data: [r, d],
-        backgroundColor: ["#2ecc71", "#e74c3c"]
+        data: [receitas, despesas],
+        backgroundColor: ["green", "red"]
       }]
     }
-  })
+  });
 }
+
+atualizar();
