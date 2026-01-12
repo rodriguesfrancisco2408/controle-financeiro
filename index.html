@@ -2,55 +2,16 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Controle Financeiro</title>
-
-  <link rel="stylesheet" href="style.css">
-
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>Teste JS</title>
 </head>
 <body>
 
-  <div class="container">
+  <h1>Teste de Botão</h1>
 
-    <div class="card saldo">
-      <h2>Saldo Atual</h2>
-      <h1 id="saldo">R$ 0,00</h1>
-      <p>Receitas: <span id="receitas">R$ 0,00</span></p>
-      <p>Despesas: <span id="despesas">R$ 0,00</span></p>
-    </div>
+  <button id="btnTeste">Clique aqui</button>
 
-    <div class="card resumo">
-      <h3>Resumo do mês</h3>
-      <canvas id="grafico"></canvas>
-    </div>
+  <p id="resultado">Nada aconteceu ainda</p>
 
-    <div class="acoes">
-      <button id="btnReceita" class="btn receita">+ Receita</button>
-      <button id="btnDespesa" class="btn despesa">- Despesa</button>
-    </div>
-
-    <div id="lista"></div>
-
-  </div>
-
-  <!-- MODAL -->
-  <div class="modal" id="modal">
-    <div class="modal-content">
-      <h3 id="tituloModal">Nova Transação</h3>
-
-      <input type="number" id="valor" placeholder="Valor">
-      <input type="text" id="descricao" placeholder="Descrição">
-      <input type="month" id="data">
-
-      <div class="modal-acoes">
-        <button id="btnSalvar" class="btn receita">Salvar</button>
-        <button id="btnCancelar" class="btn despesa">Cancelar</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- SCRIPT SEMPRE NO FINAL -->
   <script src="script.js"></script>
 </body>
 </html>
