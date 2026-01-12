@@ -44,12 +44,19 @@ function salvarTransacao() {
 
   if (!valor || !descricao || !data) return alert("Preencha tudo");
 
-  const transacao = { tipo: tipoAtual, valor, descricao, data };
+  const transacao = {
+  id: Date.now().toString(),
+  tipo: tipoAtual,
+  valor,
+  descricao,
+  data
+};
 
   if (indiceEdicao !== null) {
     transacoes[indiceEdicao] = transacao;
   } else {
     transacoes.push(transacao);
+    salvarTransacaoServidor(transacao);
   }
 
   localStorage.setItem("transacoes", JSON.stringify(transacoes));
@@ -119,4 +126,15 @@ async function carregarLancamentosServidor() {
   }
 }
 window.onload = carregarLancamentosServidor;
+async function salvarTransacaoServidor(transacao) {
+  try {
+    await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(transacao)
+    });
+  } catch (erro) {
+    console.error("Erro ao salvar no servidor", erro);
+  }
+}
 
