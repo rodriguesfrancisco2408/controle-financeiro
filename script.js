@@ -11,7 +11,18 @@ const receitasEl = document.getElementById('receitas')
 const despesasEl = document.getElementById('despesas')
 const listaEl = document.getElementById('lista')
 
+const btnReceita = document.getElementById('btnReceita')
+const btnDespesa = document.getElementById('btnDespesa')
+const btnSalvar = document.getElementById('btnSalvar')
+const btnCancelar = document.getElementById('btnCancelar')
+
 let grafico = null
+
+// EVENTOS (AQUI ESTAVA O ERRO ANTES)
+btnReceita.addEventListener('click', () => abrirModal('receita'))
+btnDespesa.addEventListener('click', () => abrirModal('despesa'))
+btnSalvar.addEventListener('click', salvarTransacao)
+btnCancelar.addEventListener('click', fecharModal)
 
 function abrirModal(tipo) {
   tipoAtual = tipo
@@ -97,17 +108,14 @@ function atualizarGrafico(receitas, despesas) {
       }]
     },
     options: {
-      responsive: true,
       plugins: {
-        legend: {
-          position: 'bottom'
-        }
+        legend: { position: 'bottom' }
       }
     }
   })
 }
 
 // Fechar modal clicando fora
-window.onclick = function (e) {
+modal.addEventListener('click', (e) => {
   if (e.target === modal) fecharModal()
-}
+})
