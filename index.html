@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Controle Financeiro</title>
+</head>
+<body>
+
+<h1>Controle Financeiro</h1>
+
+<button onclick="adicionarReceita()">+ Receita</button>
+<button onclick="adicionarDespesa()">- Despesa</button>
+
+<p id="saldo">Saldo: R$ 0</p>
+
+<ul id="lista"></ul>
+
+<script>
+let saldo = 0
+
+function atualizarSaldo() {
+  document.getElementById("saldo").innerText = "Saldo: R$ " + saldo
+}
+
+function adicionarReceita() {
+  saldo += 100
+  atualizarSaldo()
+
+  const li = document.createElement("li")
+  li.innerText = "Receita: + R$ 100"
+  document.getElementById("lista").appendChild(li)
+}
+
+function adicionarDespesa() {
+  saldo -= 50
+  atualizarSaldo()
+
+  const li = document.createElement("li")
+  li.innerText = "Despesa: - R$ 50"
+  document.getElementById("lista").appendChild(li)
+}
+</script>
+
+</body>
+</html>
