@@ -12,20 +12,21 @@
 
 <div class="app">
 
-  <!-- SELETOR DE MÊS -->
-  <div class="card">
+  <!-- SELETOR DE MÊS (VISÍVEL E CLARO) -->
+  <div class="card seletor-mes">
+    <label for="mesSelecionado">Mês de referência</label>
     <select id="mesSelecionado" onchange="atualizarTela()"></select>
   </div>
 
   <div class="card saldo">
-    <h2>Saldo Atual</h2>
+    <h2>Saldo do mês</h2>
     <h1 id="saldo">R$ 0,00</h1>
     <p>Receitas: <span id="receitas">R$ 0,00</span></p>
     <p>Despesas: <span id="despesas">R$ 0,00</span></p>
   </div>
 
   <div class="card grafico-card">
-    <h3>Resumo Financeiro</h3>
+    <h3>Resumo do mês</h3>
     <div class="grafico-container">
       <canvas id="grafico"></canvas>
     </div>
