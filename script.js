@@ -1,46 +1,34 @@
-document.addEventListener("DOMContentLoaded", () => {
-  let receitas = 0
-  let despesas = 0
+let saldo = 0;
 
-  const saldoEl = document.getElementById("saldo")
-  const receitasEl = document.getElementById("receitas")
-  const despesasEl = document.getElementById("despesas")
-  const lista = document.getElementById("lista")
+const saldoEl = document.getElementById("saldo");
+const listaEl = document.getElementById("lista");
+const btnReceita = document.getElementById("btnReceita");
+const btnDespesa = document.getElementById("btnDespesa");
 
-  const btnReceita = document.getElementById("btnReceita")
-  const btnDespesa = document.getElementById("btnDespesa")
+btnReceita.addEventListener("click", () => {
+  const valor = prompt("Valor da receita:");
+  if (!valor) return;
 
-  function atualizar() {
-    const saldo = receitas - despesas
-    saldoEl.textContent = `R$ ${saldo.toFixed(2)}`
-    receitasEl.textContent = receitas.toFixed(2)
-    despesasEl.textContent = despesas.toFixed(2)
-  }
+  const num = Number(valor);
+  saldo += num;
 
-  function adicionar(tipo) {
-    const valor = prompt("Digite o valor:")
-    const descricao = prompt("Digite a descrição:")
+  saldoEl.textContent = saldo.toFixed(2);
 
-    if (!valor || isNaN(valor)) return
+  const li = document.createElement("li");
+  li.textContent = `+ R$ ${num.toFixed(2)}`;
+  listaEl.appendChild(li);
+});
 
-    const li = document.createElement("li")
-    li.innerHTML = `
-      <span>${descricao}</span>
-      <strong>${tipo === "receita" ? "+" : "-"} R$ ${Number(valor).toFixed(2)}</strong>
-    `
+btnDespesa.addEventListener("click", () => {
+  const valor = prompt("Valor da despesa:");
+  if (!valor) return;
 
-    if (tipo === "receita") {
-      receitas += Number(valor)
-    } else {
-      despesas += Number(valor)
-    }
+  const num = Number(valor);
+  saldo -= num;
 
-    lista.appendChild(li)
-    atualizar()
-  }
+  saldoEl.textContent = saldo.toFixed(2);
 
-  btnReceita.addEventListener("click", () => adicionar("receita"))
-  btnDespesa.addEventListener("click", () => adicionar("despesa"))
-
-  atualizar()
-})
+  const li = document.createElement("li");
+  li.textContent = `- R$ ${num.toFixed(2)}`;
+  listaEl.appendChild(li);
+});
