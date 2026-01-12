@@ -1,99 +1,113 @@
-let transacoes = JSON.parse(localStorage.getItem("transacoes")) || [];
-let tipoAtual = "receita";
+let tipoAtual = 'receita'
+let transacoes = []
 
-const saldoEl = document.getElementById("saldo");
-const receitasEl = document.getElementById("receitas");
-const despesasEl = document.getElementById("despesas");
-const listaEl = document.getElementById("lista");
+const modal = document.getElementById('modal')
+const valorInput = document.getElementById('valor')
+const descricaoInput = document.getElementById('descricao')
+const dataInput = document.getElementById('data')
+
+const saldoEl = document.getElementById('saldo')
+const receitasEl = document.getElementById('receitas')
+const despesasEl = document.getElementById('despesas')
+const listaEl = document.getElementById('lista')
+
+let grafico = null
 
 function abrirModal(tipo) {
-  tipoAtual = tipo;
-  document.getElementById("modal").classList.add("ativo");
+  tipoAtual = tipo
+  document.getElementById('tituloModal').innerText =
+    tipo === 'receita' ? 'Nova Receita' : 'Nova Despesa'
+
+  valorInput.value = ''
+  descricaoInput.value = ''
+  dataInput.value = ''
+
+  modal.style.display = 'flex'
 }
 
 function fecharModal() {
-  document.getElementById("valor").value = "";
-  document.getElementById("descricao").value = "";
-  document.getElementById("modal").classList.remove("ativo");
+  modal.style.display = 'none'
 }
 
 function salvarTransacao() {
-  const valor = parseFloat(document.getElementById("valor").value);
-  const descricao = document.getElementById("descricao").value;
+  const valor = Number(valorInput.value)
+  const descricao = descricaoInput.value
+  const data = dataInput.value
 
-  if (!valor || !descricao) return;
-
-  const data = new Date().toLocaleDateString("pt-BR");
+  if (!valor || !descricao || !data) {
+    alert('Preencha todos os campos')
+    return
+  }
 
   transacoes.push({
-    id: Date.now(),
-    tipo: tipoAtual,
-    valor: valor,
-    descricao: descricao,
-    data: data
-  });
+    valor,
+    descricao,
+    data,
+    tipo: tipoAtual
+  })
 
-  localStorage.setItem("transacoes", JSON.stringify(transacoes));
-  fecharModal();
-  atualizarTudo();
+  fecharModal()
+  atualizarTela()
 }
 
-function removerTransacao(id) {
-  transacoes = transacoes.filter(t => t.id !== id);
-  localStorage.setItem("transacoes", JSON.stringify(transacoes));
-  atualizarTudo();
-}
+function atualizarTela() {
+  let totalReceitas = 0
+  let totalDespesas = 0
 
-function atualizarTudo() {
-  let receitas = 0;
-  let despesas = 0;
+  listaEl.innerHTML = ''
 
-  listaEl.innerHTML = "";
+  transacoes.forEach((t) => {
+    if (t.tipo === 'receita') totalReceitas += t.valor
+    else totalDespesas += t.valor
 
-  transacoes.forEach(t => {
-    if (t.tipo === "receita") receitas += t.valor;
-    else despesas += t.valor;
-
-    const item = document.createElement("div");
-    item.className = "item";
+    const item = document.createElement('div')
+    item.className = 'item'
 
     item.innerHTML = `
-      <div>
-        <strong class="${t.tipo}">${t.descricao}</strong><br>
-        <small>${t.data}</small>
-      </div>
-      <div class="${t.tipo}">
-        ${t.tipo === "receita" ? "+" : "-"} R$ ${t.valor.toFixed(2)}
-        <button onclick="removerTransacao(${t.id})">🗑️</button>
-      </div>
-    `;
+      <span>${t.descricao} (${t.data})</span>
+      <strong class="${t.tipo}">
+        ${t.tipo === 'receita' ? '+' : '-'} R$ ${t.valor.toFixed(2)}
+      </strong>
+    `
 
-    listaEl.appendChild(item);
-  });
+    listaEl.appendChild(item)
+  })
 
-  saldoEl.innerText = `R$ ${(receitas - despesas).toFixed(2)}`;
-  receitasEl.innerText = `R$ ${receitas.toFixed(2)}`;
-  despesasEl.innerText = `R$ ${despesas.toFixed(2)}`;
+  const saldo = totalReceitas - totalDespesas
 
-  atualizarGrafico(receitas, despesas);
+  saldoEl.innerText = `R$ ${saldo.toFixed(2)}`
+  receitasEl.innerText = `R$ ${totalReceitas.toFixed(2)}`
+  despesasEl.innerText = `R$ ${totalDespesas.toFixed(2)}`
+
+  atualizarGrafico(totalReceitas, totalDespesas)
 }
 
-let grafico;
 function atualizarGrafico(receitas, despesas) {
-  const ctx = document.getElementById("grafico").getContext("2d");
+  const ctx = document.getElementById('grafico')
 
-  if (grafico) grafico.destroy();
+  if (grafico) grafico.destroy()
 
   grafico = new Chart(ctx, {
-    type: "doughnut",
+    type: 'doughnut',
     data: {
-      labels: ["Receitas", "Despesas"],
+      labels: ['Receitas', 'Despesas'],
       datasets: [{
         data: [receitas, despesas],
-        backgroundColor: ["#2ecc71", "#e74c3c"]
+        backgroundColor: ['#2ecc71', '#e74c3c']
       }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom'
+        }
+      }
     }
-  });
+  })
 }
 
-atualizarTudo();
+// Fechar modal clicando fora
+window.onclick = function (e) {
+  if (e.target === modal) fecharModal()
+}
