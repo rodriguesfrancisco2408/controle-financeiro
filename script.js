@@ -1,5 +1,6 @@
 let transacoes = JSON.parse(localStorage.getItem("transacoes")) || [];
 let tipoAtual = "receita";
+let grafico = null;
 
 function abrirModal(tipo) {
   tipoAtual = tipo;
@@ -82,6 +83,34 @@ function atualizarTela() {
   document.getElementById("saldo").innerText = `R$ ${saldo.toFixed(2)}`;
   document.getElementById("receitas").innerText = `R$ ${receitas.toFixed(2)}`;
   document.getElementById("despesas").innerText = `R$ ${despesas.toFixed(2)}`;
+
+  atualizarGrafico(receitas, despesas);
+}
+
+function atualizarGrafico(receitas, despesas) {
+  const ctx = document.getElementById("grafico").getContext("2d");
+
+  if (grafico) {
+    grafico.destroy();
+  }
+
+  grafico = new Chart(ctx, {
+    type: "doughnut",
+    data: {
+      labels: ["Receitas", "Despesas"],
+      datasets: [{
+        data: [receitas, despesas],
+        backgroundColor: ["#2ecc71", "#e74c3c"]
+      }]
+    },
+    options: {
+      plugins: {
+        legend: {
+          position: "bottom"
+        }
+      }
+    }
+  });
 }
 
 atualizarTela();
