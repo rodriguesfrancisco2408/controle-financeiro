@@ -41,6 +41,17 @@ h1 { text-align: center; }
 .receita { background: #2ecc71; }
 .despesa { background: #e74c3c; }
 
+.filtro {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.filtro select {
+  flex: 1;
+  padding: 10px;
+}
+
 .lista { margin-top: 20px; }
 
 .item {
@@ -122,6 +133,17 @@ canvas { margin-top: 20px; }
     <button class="despesa" onclick="abrirModal('despesa')">- Despesa</button>
   </div>
 
+  <!-- FILTRO -->
+  <div class="filtro">
+    <select id="filtroMes" onchange="atualizar()">
+      <option value="">Todos os meses</option>
+    </select>
+
+    <select id="filtroAno" onchange="atualizar()">
+      <option value="">Todos os anos</option>
+    </select>
+  </div>
+
   <canvas id="grafico"></canvas>
 
   <div class="lista" id="lista"></div>
@@ -176,12 +198,12 @@ function salvar() {
 
   transacoes.push({ tipo: tipoAtual, valor, descricao, data });
   salvarLocal();
-  fecharModal();
   atualizar();
+  fecharModal();
 }
 
-function deletar(index) {
-  transacoes.splice(index, 1);
+function deletar(indexOriginal) {
+  transacoes.splice(indexOriginal, 1);
   salvarLocal();
   atualizar();
 }
@@ -190,10 +212,18 @@ function atualizar() {
   const lista = document.getElementById('lista');
   lista.innerHTML = '';
 
+  const mesFiltro = document.getElementById('filtroMes').value;
+  const anoFiltro = document.getElementById('filtroAno').value;
+
   let receitas = 0;
   let despesas = 0;
 
-  transacoes.forEach((t, i) => {
+  transacoes.forEach((t, index) => {
+    const [ano, mes] = t.data.split('-');
+
+    if ((mesFiltro && mes !== mesFiltro) ||
+        (anoFiltro && ano !== anoFiltro)) return;
+
     if (t.tipo === 'receita') receitas += t.valor;
     else despesas += t.valor;
 
@@ -206,7 +236,7 @@ function atualizar() {
       </div>
       <div>
         R$ ${t.valor.toFixed(2)}
-        <button onclick="deletar(${i})">🗑</button>
+        <button onclick="deletar(${index})">🗑</button>
       </div>
     `;
     lista.appendChild(div);
@@ -218,6 +248,33 @@ function atualizar() {
     'R$ ' + (receitas - despesas).toFixed(2);
 
   atualizarGrafico(receitas, despesas);
+  atualizarFiltros();
+}
+
+function atualizarFiltros() {
+  const meses = new Set();
+  const anos = new Set();
+
+  transacoes.forEach(t => {
+    const [ano, mes] = t.data.split('-');
+    meses.add(mes);
+    anos.add(ano);
+  });
+
+  const filtroMes = document.getElementById('filtroMes');
+  const filtroAno = document.getElementById('filtroAno');
+
+  if (filtroMes.options.length === 1) {
+    [...meses].sort().forEach(m =>
+      filtroMes.innerHTML += `<option value="${m}">${m}</option>`
+    );
+  }
+
+  if (filtroAno.options.length === 1) {
+    [...anos].sort().forEach(a =>
+      filtroAno.innerHTML += `<option value="${a}">${a}</option>`
+    );
+  }
 }
 
 function atualizarGrafico(r, d) {
@@ -237,7 +294,6 @@ function atualizarGrafico(r, d) {
   });
 }
 
-// 👉 carrega dados salvos ao abrir
 atualizar();
 </script>
 
