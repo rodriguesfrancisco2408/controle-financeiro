@@ -52,20 +52,37 @@ function salvar() {
   renderizar()
 }
 
+function deletarTransacao(index) {
+  transacoes.splice(index, 1)
+  renderizar()
+}
+
 function renderizar() {
   listaEl.innerHTML = ""
 
   let receitas = 0
   let despesas = 0
 
-  transacoes.forEach(t => {
+  transacoes.forEach((t, index) => {
     const li = document.createElement("li")
+
     li.innerHTML = `
-      <span>${t.descricao || "(sem descrição)"} - ${t.data || ""}</span>
-      <strong style="color:${t.tipo === "receita" ? "green" : "red"}">
-        ${t.tipo === "receita" ? "+" : "-"} R$ ${t.valor.toFixed(2)}
-      </strong>
+      <span>
+        ${t.descricao || "(sem descrição)"} 
+        ${t.data ? " - " + t.data : ""}
+      </span>
+
+      <div>
+        <strong style="color:${t.tipo === "receita" ? "green" : "red"}">
+          ${t.tipo === "receita" ? "+" : "-"} R$ ${t.valor.toFixed(2)}
+        </strong>
+        <button 
+          style="margin-left:10px; cursor:pointer"
+          onclick="deletarTransacao(${index})"
+        >🗑</button>
+      </div>
     `
+
     listaEl.appendChild(li)
 
     t.tipo === "receita" ? receitas += t.valor : despesas += t.valor
@@ -75,22 +92,4 @@ function renderizar() {
   receitasEl.innerText = `R$ ${receitas.toFixed(2)}`
   despesasEl.innerText = `R$ ${despesas.toFixed(2)}`
 
-  atualizarGrafico(receitas, despesas)
-}
-
-function atualizarGrafico(r, d) {
-  const ctx = document.getElementById("graficoPizza")
-
-  if (grafico) grafico.destroy()
-
-  grafico = new Chart(ctx, {
-    type: "doughnut",
-    data: {
-      labels: ["Receitas", "Despesas"],
-      datasets: [{
-        data: [r, d],
-        backgroundColor: ["#2ecc71", "#e74c3c"]
-      }]
-    }
-  })
-}
+  atualizarGrafico
