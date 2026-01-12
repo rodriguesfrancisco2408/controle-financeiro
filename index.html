@@ -1,87 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Controle Financeiro</title>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f2f2f2;
-      margin: 0;
-      padding: 0;
-    }
-
-    .app {
-      max-width: 420px;
-      margin: auto;
-      padding: 16px;
-    }
-
-    .card {
-      background: #ffffff;
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 12px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-    }
-
-    .saldo {
-      background: #1abc9c;
-      color: white;
-      text-align: center;
-    }
-
-    .acoes {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-
-    button {
-      flex: 1;
-      padding: 14px;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      color: white;
-      cursor: pointer;
-    }
-
-    .btn-receita { background: #2ecc71; }
-    .btn-despesa { background: #e74c3c; }
-
-    .item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.6);
-    }
-
-    .modal-conteudo {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      margin: 100px auto;
-      width: 90%;
-      max-width: 400px;
-    }
-
-    input {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      font-size: 16px;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -99,11 +22,14 @@
     <button class="btn-despesa" onclick="abrirModal('despesa')">- Despesa</button>
   </div>
 
+  <p id="vazio" class="vazio">Nenhum lançamento ainda</p>
+
   <div id="lista"></div>
 
-  <div id="modal" class="modal">
+  <div id="modal" class="modal" onclick="fecharModalFora(event)">
     <div class="modal-conteudo">
       <h3 id="tituloModal"></h3>
+
       <input type="number" id="valor" placeholder="Valor">
       <input type="text" id="descricao" placeholder="Descrição">
 
@@ -116,60 +42,6 @@
 
 </div>
 
-<script>
-  let transacoes = [];
-  let tipoAtual = "receita";
-
-  function abrirModal(tipo) {
-    tipoAtual = tipo;
-    document.getElementById("tituloModal").innerText =
-      tipo === "receita" ? "Nova Receita" : "Nova Despesa";
-    document.getElementById("modal").style.display = "block";
-  }
-
-  function fecharModal() {
-    document.getElementById("modal").style.display = "none";
-  }
-
-  function salvar() {
-    const valor = Number(document.getElementById("valor").value);
-    const descricao = document.getElementById("descricao").value || "Sem descrição";
-
-    if (!valor) {
-      alert("Informe um valor");
-      return;
-    }
-
-    transacoes.push({ tipo: tipoAtual, valor, descricao });
-    fecharModal();
-    atualizar();
-  }
-
-  function atualizar() {
-    let saldo = 0, receitas = 0, despesas = 0;
-    const lista = document.getElementById("lista");
-    lista.innerHTML = "";
-
-    transacoes.forEach(t => {
-      if (t.tipo === "receita") {
-        saldo += t.valor;
-        receitas += t.valor;
-      } else {
-        saldo -= t.valor;
-        despesas += t.valor;
-      }
-
-      const div = document.createElement("div");
-      div.className = "card item";
-      div.innerHTML = `<span>${t.descricao}</span><strong>R$ ${t.valor}</strong>`;
-      lista.appendChild(div);
-    });
-
-    document.getElementById("saldo").innerText = `R$ ${saldo.toFixed(2)}`;
-    document.getElementById("receitas").innerText = `R$ ${receitas.toFixed(2)}`;
-    document.getElementById("despesas").innerText = `R$ ${despesas.toFixed(2)}`;
-  }
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
