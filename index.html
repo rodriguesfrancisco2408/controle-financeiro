@@ -6,13 +6,16 @@
   <title>Controle Financeiro</title>
 
   <link rel="stylesheet" href="style.css">
-
-  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
 <div class="app">
+
+  <!-- SELETOR DE MÊS -->
+  <div class="card">
+    <select id="mesSelecionado" onchange="atualizarTela()"></select>
+  </div>
 
   <div class="card saldo">
     <h2>Saldo Atual</h2>
@@ -21,7 +24,6 @@
     <p>Despesas: <span id="despesas">R$ 0,00</span></p>
   </div>
 
-  <!-- GRÁFICO -->
   <div class="card grafico-card">
     <h3>Resumo Financeiro</h3>
     <div class="grafico-container">
@@ -34,8 +36,7 @@
     <button class="btn-despesa" onclick="abrirModal('despesa')">- Despesa</button>
   </div>
 
-  <p id="vazio" class="vazio">Nenhum lançamento ainda</p>
-
+  <p id="vazio" class="vazio">Nenhum lançamento neste mês</p>
   <div id="lista"></div>
 
   <div id="modal" class="modal" onclick="fecharModalFora(event)">
