@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbxXzJJ3spmB1ZMZZVByZeK7n3h9ksYn_P1EA8YhIovl8-2ldZdILjues9RTuKoq_ih-Qg/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbxeknl7VqdcejM1Qtnef6cAFa0t3g93VICsba1IhYG-ncZdjUpB26pC0dT80pmzM47AUQ/exec";
 
 let transacoes = JSON.parse(localStorage.getItem("transacoes")) || [];
 let tipoAtual = "";
@@ -56,6 +56,11 @@ function salvarTransacao() {
     transacoes[indiceEdicao] = transacao;
   } else {
     transacoes.push(transacao);
+    fetch(API_URL, {
+  method: "POST",
+  body: JSON.stringify(transacao)
+});
+
     salvarTransacaoServidor(transacao);
   }
 
