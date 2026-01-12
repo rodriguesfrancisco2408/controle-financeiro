@@ -4,7 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Controle Financeiro</title>
+
   <link rel="stylesheet" href="style.css">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -15,6 +19,12 @@
     <h1 id="saldo">R$ 0,00</h1>
     <p>Receitas: <span id="receitas">R$ 0,00</span></p>
     <p>Despesas: <span id="despesas">R$ 0,00</span></p>
+  </div>
+
+  <!-- GRÁFICO -->
+  <div class="card">
+    <h3>Resumo</h3>
+    <canvas id="grafico"></canvas>
   </div>
 
   <div class="acoes">
