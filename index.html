@@ -4,64 +4,53 @@
   <meta charset="UTF-8">
   <title>Controle Financeiro</title>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <div class="container">
 
-    <!-- SALDO -->
     <div class="card saldo">
       <h2>Saldo Atual</h2>
-      <h1 id="saldo">R$ 0,00</h1>
-      <p>Receitas: <span id="receitas">R$ 0,00</span></p>
-      <p>Despesas: <span id="despesas">R$ 0,00</span></p>
+      <h1 id="saldo">R$ 0.00</h1>
+      <p>Receitas: <span id="receitas">R$ 0.00</span></p>
+      <p>Despesas: <span id="despesas">R$ 0.00</span></p>
     </div>
 
-    <!-- GRÁFICO -->
-    <div class="card">
+    <div class="resumo">
       <h3>Resumo do mês</h3>
-      <canvas id="grafico" height="200"></canvas>
+      <canvas id="grafico"></canvas>
     </div>
 
-    <!-- BOTÕES -->
-    <div class="botoes">
-      <button class="btn receita" onclick="abrirModal('receita')">+ Receita</button>
-      <button class="btn despesa" onclick="abrirModal('despesa')">- Despesa</button>
+    <div class="acoes">
+      <button class="btn receita" id="btnReceita">+ Receita</button>
+      <button class="btn despesa" id="btnDespesa">- Despesa</button>
     </div>
 
-    <!-- LISTA -->
     <div id="lista"></div>
 
   </div>
 
   <!-- MODAL -->
-  <div id="modal" class="modal">
+  <div class="modal" id="modal">
     <div class="modal-content">
-
-      <h3 id="tituloModal">Novo Lançamento</h3>
+      <h3 id="tituloModal">Nova Transação</h3>
 
       <input type="number" id="valor" placeholder="Valor">
-
       <input type="text" id="descricao" placeholder="Descrição">
+      <input type="month" id="data">
 
-      <!-- ✅ CAMPO DE DATA -->
-      <input type="date" id="data">
-
-      <div class="modal-botoes">
-        <button class="btn receita" onclick="salvarTransacao()">Salvar</button>
-        <button class="btn despesa" onclick="fecharModal()">Cancelar</button>
+      <div class="modal-acoes">
+        <button class="btn receita" id="btnSalvar">Salvar</button>
+        <button class="btn despesa" id="btnCancelar">Cancelar</button>
       </div>
-
     </div>
   </div>
 
+  <!-- SCRIPT SEMPRE NO FINAL -->
   <script src="script.js"></script>
-
 </body>
 </html>
