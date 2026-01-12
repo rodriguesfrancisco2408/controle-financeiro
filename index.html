@@ -1,38 +1,52 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Controle Financeiro</title>
 
+  <!-- Estilo -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <div class="card saldo">
-    <h2>Saldo Atual</h2>
-    <h1 id="saldo">R$ 0,00</h1>
-    <p>Receitas: <span id="receitas">R$ 0,00</span></p>
-    <p>Despesas: <span id="despesas">R$ 0,00</span></p>
-  </div>
+  <div class="app">
 
-  <div class="acoes">
-    <button onclick="abrirModal('receita')" class="btn-receita">+ Receita</button>
-    <button onclick="abrirModal('despesa')" class="btn-despesa">- Despesa</button>
-  </div>
-
-  <div id="lista"></div>
-
-  <div id="modal" class="modal">
-    <div class="modal-conteudo">
-      <h3 id="tituloModal"></h3>
-      <input type="number" id="valor" placeholder="Valor">
-      <input type="text" id="descricao" placeholder="Descrição">
-      <button onclick="salvar()">Salvar</button>
-      <button onclick="fecharModal()">Cancelar</button>
+    <!-- Saldo -->
+    <div class="card saldo">
+      <h2>Saldo Atual</h2>
+      <h1 id="saldo">R$ 0,00</h1>
+      <p>Receitas: <span id="receitas">R$ 0,00</span></p>
+      <p>Despesas: <span id="despesas">R$ 0,00</span></p>
     </div>
+
+    <!-- Ações -->
+    <div class="acoes">
+      <button class="btn-receita" onclick="abrirModal('receita')">+ Receita</button>
+      <button class="btn-despesa" onclick="abrirModal('despesa')">- Despesa</button>
+    </div>
+
+    <!-- Lista -->
+    <div id="lista"></div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+      <div class="modal-conteudo">
+        <h3 id="tituloModal"></h3>
+
+        <input type="number" id="valor" placeholder="Valor" />
+        <input type="text" id="descricao" placeholder="Descrição" />
+
+        <div class="acoes">
+          <button class="btn-receita" onclick="salvar()">Salvar</button>
+          <button class="btn-despesa" onclick="fecharModal()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
   </div>
 
+  <!-- Script -->
   <script src="script.js"></script>
 </body>
 </html>
