@@ -92,4 +92,22 @@ function renderizar() {
   receitasEl.innerText = `R$ ${receitas.toFixed(2)}`
   despesasEl.innerText = `R$ ${despesas.toFixed(2)}`
 
-  atualizarGrafico
+  atualizarGrafico(receitas, despesas)
+}
+
+function atualizarGrafico(r, d) {
+  const ctx = document.getElementById("graficoPizza")
+
+  if (grafico) grafico.destroy()
+
+  grafico = new Chart(ctx, {
+    type: "doughnut",
+    data: {
+      labels: ["Receitas", "Despesas"],
+      datasets: [{
+        data: [r, d],
+        backgroundColor: ["#2ecc71", "#e74c3c"]
+      }]
+    }
+  })
+}
