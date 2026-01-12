@@ -1,8 +1,11 @@
+// ===== ESTADO =====
 let transacoes = JSON.parse(localStorage.getItem("transacoes")) || [];
 let tipoAtual = "receita";
 
+// ===== MODAL =====
 function abrirModal(tipo) {
   tipoAtual = tipo;
+
   document.getElementById("tituloModal").innerText =
     tipo === "receita" ? "Nova Receita" : "Nova Despesa";
 
@@ -16,10 +19,10 @@ function fecharModal() {
   document.getElementById("modal").style.display = "none";
 }
 
+// ===== SALVAR =====
 function salvar() {
   const valor = Number(document.getElementById("valor").value);
-  const descricao =
-    document.getElementById("descricao").value || "Sem descrição";
+  const descricao = document.getElementById("descricao").value || "Sem descrição";
 
   if (!valor || valor <= 0) {
     alert("Informe um valor válido");
@@ -28,17 +31,24 @@ function salvar() {
 
   transacoes.push({
     tipo: tipoAtual,
-    valor,
-    descricao,
+    valor: valor,
+    descricao: descricao,
     data: new Date().toLocaleDateString("pt-BR")
   });
 
-  localStorage.setItem("transacoes", JSON.stringify(transacoes));
-
-  fecharModal();
   atualizarTela();
+  fecharModal();
 }
 
+// ===== REMOVER =====
+function remover(index) {
+  if (confirm("Deseja remover este lançamento?")) {
+    transacoes.splice(index, 1);
+    atualizarTela();
+  }
+}
+
+// ===== ATUALIZAR TELA =====
 function atualizarTela() {
   let saldo = 0;
   let receitas = 0;
@@ -57,7 +67,18 @@ function atualizarTela() {
     }
 
     const div = document.createElement("div");
-    div.className = "card item";
+    div.className = `card item ${t.tipo}`;
+
     div.innerHTML = `
       <span>${t.descricao}</span>
-      <strong>${t.tipo === "rece
+      <div>
+        <strong>${t.tipo === "receita" ? "+" : "-"} R$ ${t.valor.toFixed(2)}</strong>
+        <button class="remover" onclick="remover(${index})">🗑️</button>
+      </div>
+    `;
+
+    lista.appendChild(div);
+  });
+
+  document.getElementById("saldo").innerText = `R$ ${saldo.toFixed(2)}`;
+  document.getElementById("receitas").innerText = `R$ ${receita
