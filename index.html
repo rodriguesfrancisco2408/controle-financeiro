@@ -41,9 +41,7 @@ h1 { text-align: center; }
 .receita { background: #2ecc71; }
 .despesa { background: #e74c3c; }
 
-.lista {
-  margin-top: 20px;
-}
+.lista { margin-top: 20px; }
 
 .item {
   background: white;
@@ -145,8 +143,12 @@ canvas { margin-top: 20px; }
 
 <script>
 let tipoAtual = '';
-let transacoes = [];
+let transacoes = JSON.parse(localStorage.getItem('transacoes')) || [];
 let grafico = null;
+
+function salvarLocal() {
+  localStorage.setItem('transacoes', JSON.stringify(transacoes));
+}
 
 function abrirModal(tipo) {
   tipoAtual = tipo;
@@ -173,12 +175,14 @@ function salvar() {
   }
 
   transacoes.push({ tipo: tipoAtual, valor, descricao, data });
+  salvarLocal();
   fecharModal();
   atualizar();
 }
 
 function deletar(index) {
   transacoes.splice(index, 1);
+  salvarLocal();
   atualizar();
 }
 
@@ -232,6 +236,9 @@ function atualizarGrafico(r, d) {
     }
   });
 }
+
+// 👉 carrega dados salvos ao abrir
+atualizar();
 </script>
 
 </body>
