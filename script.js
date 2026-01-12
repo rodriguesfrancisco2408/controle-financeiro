@@ -1,6 +1,8 @@
-const botao = document.getElementById('btnTeste')
-const texto = document.getElementById('resultado')
+document.addEventListener("DOMContentLoaded", () => {
+  const botao = document.getElementById("btnTeste")
+  const resultado = document.getElementById("resultado")
 
-botao.addEventListener('click', () => {
-  texto.innerText = 'O JavaScript está funcionando!'
+  botao.addEventListener("click", () => {
+    resultado.textContent = "O JavaScript está funcionando!"
+  })
 })
