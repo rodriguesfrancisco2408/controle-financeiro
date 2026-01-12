@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Controle Financeiro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Controle Financeiro</h1>
+
+<div class="card saldo">
+  <h2>Saldo Atual</h2>
+  <h1 id="saldo">R$ 0,00</h1>
+  <p>Receitas: <span id="receitas">R$ 0,00</span></p>
+  <p>Despesas: <span id="despesas">R$ 0,00</span></p>
+</div>
+
+<div class="botoes">
+  <button id="btnReceita" class="btn receita">+ Receita</button>
+  <button id="btnDespesa" class="btn despesa">- Despesa</button>
+</div>
+
+<div class="card">
+  <h3>Resumo do mês</h3>
+  <canvas id="grafico"></canvas>
+</div>
+
+<ul id="lista"></ul>
+
+<!-- MODAL -->
+<div id="modal" class="modal hidden">
+  <div class="modal-content">
+    <h3 id="tituloModal"></h3>
+
+    <input id="valor" type="number" placeholder="Valor">
+    <input id="descricao" type="text" placeholder="Descrição">
+    <input id="data" type="date">
+
+    <div class="botoes">
+      <button id="btnSalvar" class="btn receita">Salvar</button>
+      <button id="btnCancelar" class="btn despesa">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
