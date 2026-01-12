@@ -2,10 +2,37 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Controle Financeiro</title>
+
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Funcionou 🎉</h1>
-  <p>Seu site agora está carregando HTML corretamente.</p>
+
+  <div class="card saldo">
+    <h2>Saldo Atual</h2>
+    <h1 id="saldo">R$ 0,00</h1>
+    <p>Receitas: <span id="receitas">R$ 0,00</span></p>
+    <p>Despesas: <span id="despesas">R$ 0,00</span></p>
+  </div>
+
+  <div class="acoes">
+    <button onclick="abrirModal('receita')" class="btn-receita">+ Receita</button>
+    <button onclick="abrirModal('despesa')" class="btn-despesa">- Despesa</button>
+  </div>
+
+  <div id="lista"></div>
+
+  <div id="modal" class="modal">
+    <div class="modal-conteudo">
+      <h3 id="tituloModal"></h3>
+      <input type="number" id="valor" placeholder="Valor">
+      <input type="text" id="descricao" placeholder="Descrição">
+      <button onclick="salvar()">Salvar</button>
+      <button onclick="fecharModal()">Cancelar</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
