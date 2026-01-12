@@ -1,3 +1,5 @@
+const API_URL = "https://script.google.com/macros/s/AKfycbxXzJJ3spmB1ZMZZVByZeK7n3h9ksYn_P1EA8YhIovl8-2ldZdILjues9RTuKoq_ih-Qg/exec";
+
 let transacoes = JSON.parse(localStorage.getItem("transacoes")) || [];
 let tipoAtual = "";
 let indiceEdicao = null;
@@ -105,5 +107,16 @@ function atualizarGrafico(receitas, despesas) {
     }
   });
 }
+async function carregarLancamentosServidor() {
+  try {
+    const resposta = await fetch(API_URL);
+    const dados = await resposta.json();
 
-atualizar();
+    transacoes = dados;
+    atualizarTudo();
+  } catch (erro) {
+    console.error("Erro ao carregar dados do servidor", erro);
+  }
+}
+window.onload = carregarLancamentosServidor;
+
