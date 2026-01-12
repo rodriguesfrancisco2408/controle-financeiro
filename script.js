@@ -22,7 +22,7 @@ let grafico = null
 btnReceita.onclick = () => abrirModal('receita')
 btnDespesa.onclick = () => abrirModal('despesa')
 btnCancelar.onclick = fecharModal
-btnSalvar.onclick = salvarTransacao
+btnSalvar.onclick = salvar
 
 function abrirModal(tipo) {
   tipoAtual = tipo
@@ -37,7 +37,7 @@ function fecharModal() {
   modal.classList.add('hidden')
 }
 
-function salvarTransacao() {
+function salvar() {
   const valor = Number(valorInput.value)
   const descricao = descricaoInput.value.trim()
   const data = dataInput.value
@@ -47,27 +47,22 @@ function salvarTransacao() {
     return
   }
 
-  transacoes.push({
-    tipo: tipoAtual,
-    valor,
-    descricao,
-    data
-  })
-
+  transacoes.push({ tipo: tipoAtual, valor, descricao, data })
   localStorage.setItem('transacoes', JSON.stringify(transacoes))
+
   fecharModal()
-  atualizarTela()
+  atualizar()
 }
 
-function atualizarTela() {
+function atualizar() {
   listaEl.innerHTML = ''
 
-  let totalReceitas = 0
-  let totalDespesas = 0
+  let receitas = 0
+  let despesas = 0
 
-  transacoes.forEach((t, index) => {
-    if (t.tipo === 'receita') totalReceitas += t.valor
-    else totalDespesas += t.valor
+  transacoes.forEach((t, i) => {
+    if (t.tipo === 'receita') receitas += t.valor
+    else despesas += t.valor
 
     const li = document.createElement('li')
     li.className = t.tipo
@@ -78,33 +73,31 @@ function atualizarTela() {
         <small>${formatarData(t.data)}</small>
       </div>
       <span>${t.tipo === 'receita' ? '+' : '-'} R$ ${t.valor.toFixed(2)}</span>
-      <button onclick="remover(${index})">🗑️</button>
+      <button onclick="remover(${i})">🗑️</button>
     `
 
     listaEl.appendChild(li)
   })
 
-  const saldo = totalReceitas - totalDespesas
+  saldoEl.innerText = `R$ ${(receitas - despesas).toFixed(2)}`
+  receitasEl.innerText = `R$ ${receitas.toFixed(2)}`
+  despesasEl.innerText = `R$ ${despesas.toFixed(2)}`
 
-  saldoEl.innerText = `R$ ${saldo.toFixed(2)}`
-  receitasEl.innerText = `R$ ${totalReceitas.toFixed(2)}`
-  despesasEl.innerText = `R$ ${totalDespesas.toFixed(2)}`
-
-  atualizarGrafico(totalReceitas, totalDespesas)
+  atualizarGrafico(receitas, despesas)
 }
 
-function remover(index) {
-  transacoes.splice(index, 1)
+function remover(i) {
+  transacoes.splice(i, 1)
   localStorage.setItem('transacoes', JSON.stringify(transacoes))
-  atualizarTela()
+  atualizar()
 }
 
 function formatarData(data) {
-  const [ano, mes, dia] = data.split('-')
-  return `${dia}/${mes}/${ano}`
+  const [a, m, d] = data.split('-')
+  return `${d}/${m}/${a}`
 }
 
-function atualizarGrafico(receitas, despesas) {
+function atualizarGrafico(r, d) {
   const ctx = document.getElementById('grafico')
 
   if (grafico) grafico.destroy()
@@ -114,11 +107,11 @@ function atualizarGrafico(receitas, despesas) {
     data: {
       labels: ['Receitas', 'Despesas'],
       datasets: [{
-        data: [receitas, despesas],
+        data: [r, d],
         backgroundColor: ['#2ecc71', '#e74c3c']
       }]
     }
   })
 }
 
-atualizarTela()
+atualizar()
