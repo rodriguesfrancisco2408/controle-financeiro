@@ -1,25 +1,25 @@
 * {
   box-sizing: border-box;
+  font-family: Arial, sans-serif;
 }
 
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
   background: #f2f2f2;
+  margin: 0;
+  padding: 20px;
 }
 
-.app {
+.container {
   max-width: 420px;
   margin: auto;
-  padding: 16px;
 }
 
 .card {
   background: white;
-  border-radius: 14px;
-  padding: 16px;
-  margin-bottom: 14px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
 .saldo {
@@ -28,71 +28,81 @@ body {
   text-align: center;
 }
 
-.grafico-card {
-  text-align: center;
-}
-
-.grafico-container {
-  position: relative;
-  width: 100%;
-  height: 260px; /* FORÇA ALTURA VISÍVEL */
-}
-
-canvas {
-  width: 100% !important;
-  height: 100% !important;
-}
-
 .acoes {
   display: flex;
   gap: 10px;
-  margin-bottom: 14px;
+  margin-bottom: 15px;
 }
 
 button {
   flex: 1;
-  padding: 14px;
+  padding: 12px;
   border: none;
-  border-radius: 10px;
-  font-size: 16px;
+  border-radius: 8px;
   color: white;
+  font-size: 16px;
   cursor: pointer;
 }
 
-.btn-receita { background: #2ecc71; }
-.btn-despesa { background: #e74c3c; }
+.receita {
+  background: #2ecc71;
+}
 
-.item {
+.despesa {
+  background: #e74c3c;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.item.receita { color: #2ecc71; }
-.item.despesa { color: #e74c3c; }
-
-.remover {
-  background: none;
-  border: none;
-  font-size: 18px;
-  cursor: pointer;
-  margin-left: 8px;
+li.receita {
+  color: #2ecc71;
 }
 
-.vazio {
-  text-align: center;
-  color: #777;
-  margin: 20px 0;
+li.despesa {
+  color: #e74c3c;
 }
 
 .modal {
-  display: none;
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.modal-conteudo {
+.hidden {
+  display: none;
+}
+
+.modal-content {
   background: white;
   padding: 20px;
-  border-radius: 14px
+  border-radius: 12px;
+  width: 90%;
+  max-width: 350px;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.modal-botoes {
+  display: flex;
+  gap: 10px;
+}
