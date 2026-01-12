@@ -5,6 +5,10 @@ function abrirModal(tipo) {
   tipoAtual = tipo;
   document.getElementById("tituloModal").innerText =
     tipo === "receita" ? "Nova Receita" : "Nova Despesa";
+
+  document.getElementById("valor").value = "";
+  document.getElementById("descricao").value = "";
+
   document.getElementById("modal").style.display = "block";
 }
 
@@ -14,9 +18,21 @@ function fecharModal() {
 
 function salvar() {
   const valor = Number(document.getElementById("valor").value);
-  const descricao = document.getElementById("descricao").value || "Sem descrição";
+  const descricao =
+    document.getElementById("descricao").value || "Sem descrição";
 
-  transacoes.push({ tipo: tipoAtual, valor, descricao });
+  if (!valor || valor <= 0) {
+    alert("Informe um valor válido");
+    return;
+  }
+
+  transacoes.push({
+    tipo: tipoAtual,
+    valor,
+    descricao,
+    data: new Date().toLocaleDateString("pt-BR")
+  });
+
   localStorage.setItem("transacoes", JSON.stringify(transacoes));
 
   fecharModal();
@@ -24,26 +40,24 @@ function salvar() {
 }
 
 function atualizarTela() {
-  let saldo = 0, receitas = 0, despesas = 0;
+  let saldo = 0;
+  let receitas = 0;
+  let despesas = 0;
+
   const lista = document.getElementById("lista");
   lista.innerHTML = "";
 
-  transacoes.forEach((t, i) => {
-    saldo += t.tipo === "receita" ? t.valor : -t.valor;
-    t.tipo === "receita" ? receitas += t.valor : despesas += t.valor;
+  transacoes.forEach((t, index) => {
+    if (t.tipo === "receita") {
+      saldo += t.valor;
+      receitas += t.valor;
+    } else {
+      saldo -= t.valor;
+      despesas += t.valor;
+    }
 
     const div = document.createElement("div");
     div.className = "card item";
     div.innerHTML = `
       <span>${t.descricao}</span>
-      <strong>${t.tipo === "receita" ? "+" : "-"} R$ ${t.valor}</strong>
-    `;
-    lista.appendChild(div);
-  });
-
-  document.getElementById("saldo").innerText = `R$ ${saldo.toFixed(2)}`;
-  document.getElementById("receitas").innerText = `R$ ${receitas.toFixed(2)}`;
-  document.getElementById("despesas").innerText = `R$ ${despesas.toFixed(2)}`;
-}
-
-atualizarTela();
+      <strong>${t.tipo === "rece
