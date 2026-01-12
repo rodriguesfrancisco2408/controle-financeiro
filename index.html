@@ -1,52 +1,238 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>Controle Financeiro</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Controle Financeiro</title>
 
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+* { box-sizing: border-box; font-family: Arial, sans-serif; }
+body { margin: 0; background: #f2f2f2; }
+.container { max-width: 900px; margin: auto; padding: 20px; }
+
+h1 { text-align: center; }
+
+.card {
+  background: #1abc9c;
+  color: white;
+  padding: 25px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.saldo { font-size: 36px; margin: 10px 0; }
+
+.botoes {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.botoes button {
+  flex: 1;
+  padding: 15px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  color: white;
+}
+
+.receita { background: #2ecc71; }
+.despesa { background: #e74c3c; }
+
+.lista {
+  margin-top: 20px;
+}
+
+.item {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.item.receita { border-left: 6px solid #2ecc71; color: #2ecc71; }
+.item.despesa { border-left: 6px solid #e74c3c; color: #e74c3c; }
+
+.item small { display: block; color: #555; }
+
+.item button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+}
+
+.modal-content button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+canvas { margin-top: 20px; }
+
+@media (max-width:600px) {
+  .saldo { font-size: 28px; }
+}
+</style>
 </head>
+
 <body>
 
+<div class="container">
   <h1>Controle Financeiro</h1>
 
-  <section class="saldo">
+  <div class="card">
     <h2>Saldo Atual</h2>
-    <p id="saldo">R$ 0,00</p>
-    <small>Receitas: <span id="receitas">R$ 0,00</span></small><br />
-    <small>Despesas: <span id="despesas">R$ 0,00</span></small>
-  </section>
-
-  <div class="acoes">
-    <button id="btnReceita" class="receita">+ Receita</button>
-    <button id="btnDespesa" class="despesa">- Despesa</button>
+    <div class="saldo" id="saldo">R$ 0,00</div>
+    <div>Receitas: R$ <span id="receitas">0,00</span></div>
+    <div>Despesas: R$ <span id="despesas">0,00</span></div>
   </div>
 
-  <section class="grafico">
-    <h3>Resumo do mês</h3>
-    <canvas id="graficoPizza"></canvas>
-  </section>
+  <div class="botoes">
+    <button class="receita" onclick="abrirModal('receita')">+ Receita</button>
+    <button class="despesa" onclick="abrirModal('despesa')">- Despesa</button>
+  </div>
 
-  <ul id="lista"></ul>
+  <canvas id="grafico"></canvas>
 
-  <!-- MODAL -->
-  <div id="modal" class="modal hidden">
-    <div class="modal-content">
-      <h3 id="tituloModal"></h3>
+  <div class="lista" id="lista"></div>
+</div>
 
-      <input type="number" id="valor" placeholder="Valor" />
-      <input type="text" id="descricao" placeholder="Descrição" />
-      <input type="date" id="data" />
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h3 id="tituloModal"></h3>
+    <input type="number" id="valor" placeholder="Valor">
+    <input type="text" id="descricao" placeholder="Descrição">
+    <input type="date" id="data">
+    <button onclick="salvar()">Salvar</button>
+    <button onclick="fecharModal()">Cancelar</button>
+  </div>
+</div>
 
-      <div class="modal-botoes">
-        <button id="btnSalvar">Salvar</button>
-        <button id="btnCancelar">Cancelar</button>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+let tipoAtual = '';
+let transacoes = [];
+let grafico = null;
+
+function abrirModal(tipo) {
+  tipoAtual = tipo;
+  document.getElementById('tituloModal').innerText =
+    tipo === 'receita' ? 'Nova Receita' : 'Nova Despesa';
+  document.getElementById('modal').style.display = 'flex';
+}
+
+function fecharModal() {
+  document.getElementById('modal').style.display = 'none';
+  document.getElementById('valor').value = '';
+  document.getElementById('descricao').value = '';
+  document.getElementById('data').value = '';
+}
+
+function salvar() {
+  const valor = Number(document.getElementById('valor').value);
+  const descricao = document.getElementById('descricao').value;
+  const data = document.getElementById('data').value;
+
+  if (!valor || !descricao || !data) {
+    alert('Preencha todos os campos');
+    return;
+  }
+
+  transacoes.push({ tipo: tipoAtual, valor, descricao, data });
+  fecharModal();
+  atualizar();
+}
+
+function deletar(index) {
+  transacoes.splice(index, 1);
+  atualizar();
+}
+
+function atualizar() {
+  const lista = document.getElementById('lista');
+  lista.innerHTML = '';
+
+  let receitas = 0;
+  let despesas = 0;
+
+  transacoes.forEach((t, i) => {
+    if (t.tipo === 'receita') receitas += t.valor;
+    else despesas += t.valor;
+
+    const div = document.createElement('div');
+    div.className = `item ${t.tipo}`;
+    div.innerHTML = `
+      <div>
+        <strong>${t.descricao}</strong>
+        <small>${t.data}</small>
       </div>
-    </div>
-  </div>
+      <div>
+        R$ ${t.valor.toFixed(2)}
+        <button onclick="deletar(${i})">🗑</button>
+      </div>
+    `;
+    lista.appendChild(div);
+  });
 
-  <script src="script.js"></script>
+  document.getElementById('receitas').innerText = receitas.toFixed(2);
+  document.getElementById('despesas').innerText = despesas.toFixed(2);
+  document.getElementById('saldo').innerText =
+    'R$ ' + (receitas - despesas).toFixed(2);
+
+  atualizarGrafico(receitas, despesas);
+}
+
+function atualizarGrafico(r, d) {
+  const ctx = document.getElementById('grafico');
+
+  if (grafico) grafico.destroy();
+
+  grafico = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: ['Receitas', 'Despesas'],
+      datasets: [{
+        data: [r, d],
+        backgroundColor: ['#2ecc71', '#e74c3c']
+      }]
+    }
+  });
+}
+</script>
+
 </body>
 </html>
