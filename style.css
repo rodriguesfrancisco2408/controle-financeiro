@@ -18,7 +18,7 @@ body {
   background: white;
   border-radius: 14px;
   padding: 16px;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.05);
 }
 
@@ -28,10 +28,25 @@ body {
   text-align: center;
 }
 
+.grafico-card {
+  text-align: center;
+}
+
+.grafico-container {
+  position: relative;
+  width: 100%;
+  height: 260px; /* FORÇA ALTURA VISÍVEL */
+}
+
+canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
 .acoes {
   display: flex;
   gap: 10px;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 button {
@@ -80,15 +95,4 @@ button {
 .modal-conteudo {
   background: white;
   padding: 20px;
-  border-radius: 14px;
-  margin: 100px auto;
-  width: 90%;
-  max-width: 400px;
-}
-
-input {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  font-size: 16px;
-}
+  border-radius: 14px
