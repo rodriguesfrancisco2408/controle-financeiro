@@ -11,8 +11,8 @@
 
 <h1>Controle Financeiro</h1>
 
-<div class="saldo">
-  <h2>Saldo Atual</h2>
+<div class="resumo">
+  <h2>Saldo</h2>
   <p id="saldo">R$ 0,00</p>
   <p>Receitas: <span id="receitas">R$ 0,00</span></p>
   <p>Despesas: <span id="despesas">R$ 0,00</span></p>
@@ -25,18 +25,16 @@
 
 <canvas id="grafico"></canvas>
 
-<h2>Resumo do mês</h2>
 <ul id="lista"></ul>
 
-<!-- MODAL -->
 <div id="modal">
   <div class="modal-content">
-    <h3>Novo Lançamento</h3>
+    <h3>Lançamento</h3>
     <input id="valor" type="number" placeholder="Valor">
     <input id="descricao" type="text" placeholder="Descrição">
     <input id="data" type="date">
-    <div class="modal-botoes">
-      <button onclick="salvarTransacao()">Salvar</button>
+    <div class="acoes">
+      <button onclick="salvar()">Salvar</button>
       <button onclick="fecharModal()">Cancelar</button>
     </div>
   </div>
