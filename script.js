@@ -1,4 +1,4 @@
-const API_URL = "COLE_AQUI_SUA_URL_DO_GOOGLE_SCRIPT";
+const API_URL = "https://script.google.com/macros/s/AKfycbxeknl7VqdcejM1Qtnef6cAFa0t3g93VICsba1IhYG-ncZdjUpB26pC0dT80pmzM47AUQ/exec";
 
 let transacoes = JSON.parse(localStorage.getItem("transacoes")) || [];
 let tipoAtual = "";
