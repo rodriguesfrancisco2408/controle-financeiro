@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Controle Financeiro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<h1>Controle Financeiro</h1>
+
+<div class="resumo">
+  <h2>Saldo</h2>
+  <p id="saldo">R$ 0,00</p>
+  <p>Receitas: <span id="receitas">R$ 0,00</span></p>
+  <p>Despesas: <span id="despesas">R$ 0,00</span></p>
+</div>
+
+<div class="botoes">
+  <button class="receita" onclick="abrirModal('receita')">+ Receita</button>
+  <button class="despesa" onclick="abrirModal('despesa')">- Despesa</button>
+</div>
+
+<canvas id="grafico"></canvas>
+
+<ul id="lista"></ul>
+
+<div id="modal">
+  <div class="modal-content">
+    <h3>Lançamento</h3>
+    <input id="valor" type="number" placeholder="Valor">
+    <input id="descricao" type="text" placeholder="Descrição">
+    <input id="data" type="date">
+    <div class="acoes">
+      <button onclick="salvar()">Salvar</button>
+      <button onclick="fecharModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
