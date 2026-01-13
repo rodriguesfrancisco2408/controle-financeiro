@@ -1,5 +1,3 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbxeknl7VqdcejM1Qtnef6cAFa0t3g93VICsba1IhYG-ncZdjUpB26pC0dT80pmzM47AUQ/exec";
-
 let transacoes = JSON.parse(localStorage.getItem("transacoes")) || [];
 let tipoAtual = "";
 let indiceEdicao = null;
@@ -33,15 +31,17 @@ function fecharModal() {
   indiceEdicao = null;
 }
 
-function salvarTransacao() {
+function salvar() {
   const valor = Number(valorInput.value);
   const descricao = descricaoInput.value;
   const data = dataInput.value;
 
-  if (!valor || !descricao || !data) return alert("Preencha tudo");
+  if (!valor || !descricao || !data) {
+    alert("Preencha todos os campos");
+    return;
+  }
 
   const transacao = {
-    id: Date.now().toString(),
     tipo: tipoAtual,
     valor,
     descricao,
@@ -52,23 +52,21 @@ function salvarTransacao() {
     transacoes[indiceEdicao] = transacao;
   } else {
     transacoes.push(transacao);
-    salvarServidor(transacao);
   }
 
   localStorage.setItem("transacoes", JSON.stringify(transacoes));
   fecharModal();
-  atualizarTudo();
+  atualizar();
 }
 
-function deletarTransacao(index) {
+function deletar(index) {
   transacoes.splice(index, 1);
   localStorage.setItem("transacoes", JSON.stringify(transacoes));
-  atualizarTudo();
+  atualizar();
 }
 
-function atualizarTudo() {
+function atualizar() {
   lista.innerHTML = "";
-
   let receitas = 0;
   let despesas = 0;
 
@@ -81,22 +79,24 @@ function atualizarTudo() {
       ${t.descricao} - R$ ${t.valor.toFixed(2)}
       <span>
         <button onclick="abrirModal('${t.tipo}', ${i})">✏️</button>
-        <button onclick="deletarTransacao(${i})">🗑️</button>
+        <button onclick="deletar(${i})">🗑️</button>
       </span>
     `;
     lista.appendChild(li);
   });
 
-  document.getElementById("saldo").innerText = `R$ ${(receitas - despesas).toFixed(2)}`;
-  document.getElementById("receitas").innerText = `R$ ${receitas.toFixed(2)}`;
-  document.getElementById("despesas").innerText = `R$ ${despesas.toFixed(2)}`;
+  document.getElementById("saldo").innerText =
+    `R$ ${(receitas - despesas).toFixed(2)}`;
+  document.getElementById("receitas").innerText =
+    `R$ ${receitas.toFixed(2)}`;
+  document.getElementById("despesas").innerText =
+    `R$ ${despesas.toFixed(2)}`;
 
   atualizarGrafico(receitas, despesas);
 }
 
-function atualizarGrafico(receitas, despesas) {
+function atualizarGrafico(r, d) {
   const ctx = document.getElementById("grafico");
-
   if (grafico) grafico.destroy();
 
   grafico = new Chart(ctx, {
@@ -104,35 +104,11 @@ function atualizarGrafico(receitas, despesas) {
     data: {
       labels: ["Receitas", "Despesas"],
       datasets: [{
-        data: [receitas, despesas],
-        backgroundColor: ["green", "red"]
+        data: [r, d],
+        backgroundColor: ["#2ecc71", "#e74c3c"]
       }]
     }
   });
 }
 
-async function salvarServidor(transacao) {
-  try {
-    await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(transacao)
-    });
-  } catch {}
-}
-
-async function carregarServidor() {
-  try {
-    const r = await fetch(API_URL);
-    const dados = await r.json();
-
-    if (Array.isArray(dados) && dados.length > 0) {
-      transacoes = dados;
-      localStorage.setItem("transacoes", JSON.stringify(transacoes));
-    }
-  } catch {}
-
-  atualizarTudo();
-}
-
-carregarServidor();
+atualizar();
