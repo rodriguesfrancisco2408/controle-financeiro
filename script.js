@@ -1,24 +1,18 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbxeknl7VqdcejM1Qtnef6cAFa0t3g93VICsba1IhYG-ncZdjUpB26pC0dT80pmzM47AUQ/exec";
+const API_URL = "COLE_AQUI_SUA_URL_DO_GOOGLE_SCRIPT";
 
 let transacoes = JSON.parse(localStorage.getItem("transacoes")) || [];
 let tipoAtual = "";
 let indiceEdicao = null;
 let grafico = null;
 
-const modal = document.getElementById("modal");
 const valorInput = document.getElementById("valor");
 const descricaoInput = document.getElementById("descricao");
 const dataInput = document.getElementById("data");
-
-document.getElementById("btnReceita").onclick = () => abrirModal("receita");
-document.getElementById("btnDespesa").onclick = () => abrirModal("despesa");
-document.getElementById("btnCancelar").onclick = fecharModal;
-document.getElementById("btnSalvar").onclick = salvarTransacao;
+const lista = document.getElementById("lista");
 
 function abrirModal(tipo, index = null) {
   tipoAtual = tipo;
   indiceEdicao = index;
-  modal.style.display = "flex";
 
   if (index !== null) {
     const t = transacoes[index];
@@ -30,10 +24,12 @@ function abrirModal(tipo, index = null) {
     descricaoInput.value = "";
     dataInput.value = "";
   }
+
+  document.getElementById("modal").style.display = "flex";
 }
 
 function fecharModal() {
-  modal.style.display = "none";
+  document.getElementById("modal").style.display = "none";
   indiceEdicao = null;
 }
 
@@ -45,53 +41,48 @@ function salvarTransacao() {
   if (!valor || !descricao || !data) return alert("Preencha tudo");
 
   const transacao = {
-  id: Date.now().toString(),
-  tipo: tipoAtual,
-  valor,
-  descricao,
-  data
-};
+    id: Date.now().toString(),
+    tipo: tipoAtual,
+    valor,
+    descricao,
+    data
+  };
 
   if (indiceEdicao !== null) {
     transacoes[indiceEdicao] = transacao;
   } else {
     transacoes.push(transacao);
-    fetch(API_URL, {
-  method: "POST",
-  body: JSON.stringify(transacao)
-});
-
-    salvarTransacaoServidor(transacao);
+    salvarServidor(transacao);
   }
 
   localStorage.setItem("transacoes", JSON.stringify(transacoes));
   fecharModal();
-  atualizar();
+  atualizarTudo();
 }
 
 function deletarTransacao(index) {
   transacoes.splice(index, 1);
   localStorage.setItem("transacoes", JSON.stringify(transacoes));
-  atualizar();
+  atualizarTudo();
 }
 
-function atualizar() {
-  const lista = document.getElementById("lista");
+function atualizarTudo() {
   lista.innerHTML = "";
 
   let receitas = 0;
   let despesas = 0;
 
-  transacoes.forEach((t, index) => {
+  transacoes.forEach((t, i) => {
     if (t.tipo === "receita") receitas += t.valor;
     else despesas += t.valor;
 
     const li = document.createElement("li");
     li.innerHTML = `
-      ${t.descricao} (${t.data}) - 
-      <strong>${t.tipo === "receita" ? "+" : "-"} R$ ${t.valor}</strong>
-      <button onclick="abrirModal('${t.tipo}', ${index})">Editar</button>
-      <button onclick="deletarTransacao(${index})">🗑</button>
+      ${t.descricao} - R$ ${t.valor.toFixed(2)}
+      <span>
+        <button onclick="abrirModal('${t.tipo}', ${i})">✏️</button>
+        <button onclick="deletarTransacao(${i})">🗑️</button>
+      </span>
     `;
     lista.appendChild(li);
   });
@@ -119,28 +110,29 @@ function atualizarGrafico(receitas, despesas) {
     }
   });
 }
-async function carregarLancamentosServidor() {
-  try {
-    const resposta = await fetch(API_URL);
-    const dados = await resposta.json();
 
-    transacoes = dados;
-    atualizarTudo();
-    carregarTransacoesServidor();
-  } catch (erro) {
-    console.error("Erro ao carregar dados do servidor", erro);
-  }
-}
-window.onload = carregarLancamentosServidor;
-async function salvarTransacaoServidor(transacao) {
+async function salvarServidor(transacao) {
   try {
     await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(transacao)
     });
-  } catch (erro) {
-    console.error("Erro ao salvar no servidor", erro);
-  }
+  } catch {}
 }
 
+async function carregarServidor() {
+  try {
+    const r = await fetch(API_URL);
+    const dados = await r.json();
+
+    if (Array.isArray(dados) && dados.length > 0) {
+      transacoes = dados;
+      localStorage.setItem("transacoes", JSON.stringify(transacoes));
+    }
+  } catch {}
+
+  atualizarTudo();
+}
+
+carregarServidor();
