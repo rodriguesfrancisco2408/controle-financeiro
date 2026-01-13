@@ -126,6 +126,7 @@ async function carregarLancamentosServidor() {
 
     transacoes = dados;
     atualizarTudo();
+    carregarTransacoesServidor();
   } catch (erro) {
     console.error("Erro ao carregar dados do servidor", erro);
   }
