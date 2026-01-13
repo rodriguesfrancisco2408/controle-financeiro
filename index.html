@@ -1,20 +1,17 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Controle Financeiro</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <link rel="manifest" href="manifest.json">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style.css">
-
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
 <h1>Controle Financeiro</h1>
 
-<div id="resumo">
+<div class="saldo">
   <h2>Saldo Atual</h2>
   <p id="saldo">R$ 0,00</p>
   <p>Receitas: <span id="receitas">R$ 0,00</span></p>
@@ -22,29 +19,28 @@
 </div>
 
 <div class="botoes">
-  <button id="btnReceita">+ Receita</button>
-  <button id="btnDespesa">- Despesa</button>
+  <button class="receita" onclick="abrirModal('receita')">+ Receita</button>
+  <button class="despesa" onclick="abrirModal('despesa')">- Despesa</button>
 </div>
 
-<div id="modal" class="modal">
+<canvas id="grafico"></canvas>
+
+<h2>Resumo do mês</h2>
+<ul id="lista"></ul>
+
+<!-- MODAL -->
+<div id="modal">
   <div class="modal-content">
-    <h3 id="tituloModal">Novo Lançamento</h3>
-
-    <input type="number" id="valor" placeholder="Valor">
-    <input type="text" id="descricao" placeholder="Descrição">
-    <input type="date" id="data">
-
-    <div class="acoes">
-      <button id="btnSalvar">Salvar</button>
-      <button id="btnCancelar">Cancelar</button>
+    <h3>Novo Lançamento</h3>
+    <input id="valor" type="number" placeholder="Valor">
+    <input id="descricao" type="text" placeholder="Descrição">
+    <input id="data" type="date">
+    <div class="modal-botoes">
+      <button onclick="salvarTransacao()">Salvar</button>
+      <button onclick="fecharModal()">Cancelar</button>
     </div>
   </div>
 </div>
-
-<h3>Resumo do mês</h3>
-<canvas id="grafico"></canvas>
-
-<ul id="lista"></ul>
 
 <script src="script.js"></script>
 </body>
